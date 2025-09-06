@@ -1,0 +1,704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - E-Store</title>
+    
+    <!-- Material Design Lite CSS -->
+    <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+    <link rel="stylesheet" href="stylesheets/mdl-custom.css">
+    
+    <style>
+        .checkout-container {
+            background: #fafafa;
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .checkout-header {
+            background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+            color: white;
+            padding: 40px 0;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+        
+        .checkout-header h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin: 0;
+        }
+        
+        .checkout-content {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .checkout-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 32px;
+        }
+        
+        .checkout-form {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 32px;
+        }
+        
+        .form-section {
+            margin-bottom: 32px;
+        }
+        
+        .form-section h3 {
+            color: #333;
+            font-size: 1.3rem;
+            font-weight: 500;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+        
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 16px;
+        }
+        
+        .form-row.full {
+            grid-template-columns: 1fr;
+        }
+        
+        .order-summary {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            padding: 24px;
+            height: fit-content;
+            position: sticky;
+            top: 20px;
+        }
+        
+        .summary-title {
+            font-size: 1.3rem;
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .summary-item {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            padding: 8px 0;
+        }
+        
+        .summary-item.total {
+            border-top: 2px solid #e0e0e0;
+            font-weight: 500;
+            font-size: 1.1rem;
+            margin-top: 16px;
+            padding-top: 16px;
+        }
+        
+        .order-items {
+            margin-bottom: 20px;
+        }
+        
+        .order-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 4px;
+        }
+        
+        .item-image {
+            width: 50px;
+            height: 50px;
+            object-fit: cover;
+            border-radius: 4px;
+            margin-right: 12px;
+        }
+        
+        .item-details {
+            flex: 1;
+        }
+        
+        .item-name {
+            font-weight: 500;
+            color: #333;
+            margin-bottom: 4px;
+        }
+        
+        .item-quantity {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .item-price {
+            font-weight: 500;
+            color: #F44336;
+        }
+        
+        .place-order-btn {
+            width: 100%;
+            margin-top: 20px;
+        }
+        
+        .loading {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 16px;
+            border-radius: 4px;
+            margin: 16px 0;
+            border-left: 4px solid #F44336;
+        }
+        
+        .success {
+            background: #e8f5e8;
+            color: #2e7d32;
+            padding: 16px;
+            border-radius: 4px;
+            margin: 16px 0;
+            border-left: 4px solid #4CAF50;
+        }
+        
+        @media (max-width: 768px) {
+            .checkout-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+            
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+            
+            .checkout-container {
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <!-- Header -->
+        <div class="checkout-header">
+            <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--12-col">
+                    <h1>Checkout</h1>
+                    <p>Complete your order</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Checkout Content -->
+        <div class="checkout-content">
+            <div class="mdl-grid">
+                <div class="mdl-cell mdl-cell--12-col">
+                    <div class="checkout-grid">
+                        <!-- Checkout Form -->
+                        <div class="checkout-form">
+                            <form id="checkoutForm">
+                                <!-- Shipping Information -->
+                                <div class="form-section">
+                                    <h3>
+                                        <i class="material-icons">local_shipping</i>
+                                        Shipping Information
+                                    </h3>
+                                    
+                                    <div class="form-row">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="text" id="shippingFirstName" required />
+                                            <label class="mdl-textfield__label" for="shippingFirstName">First Name</label>
+                                        </div>
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="text" id="shippingLastName" required />
+                                            <label class="mdl-textfield__label" for="shippingLastName">Last Name</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row full">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="text" id="shippingAddress" required />
+                                            <label class="mdl-textfield__label" for="shippingAddress">Address</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="text" id="shippingCity" required />
+                                            <label class="mdl-textfield__label" for="shippingCity">City</label>
+                                        </div>
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="text" id="shippingState" required />
+                                            <label class="mdl-textfield__label" for="shippingState">State</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="text" id="shippingZipCode" required />
+                                            <label class="mdl-textfield__label" for="shippingZipCode">ZIP Code</label>
+                                        </div>
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="text" id="shippingCountry" required />
+                                            <label class="mdl-textfield__label" for="shippingCountry">Country</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Payment Information -->
+                                <div class="form-section">
+                                    <h3>
+                                        <i class="material-icons">payment</i>
+                                        Payment Information
+                                    </h3>
+                                    
+                                    <div class="form-row full">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="text" id="cardNumber" required />
+                                            <label class="mdl-textfield__label" for="cardNumber">Card Number</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="text" id="cardExpiry" placeholder="MM/YY" required />
+                                            <label class="mdl-textfield__label" for="cardExpiry">Expiry Date</label>
+                                        </div>
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="text" id="cardCvv" required />
+                                            <label class="mdl-textfield__label" for="cardCvv">CVV</label>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="form-row full">
+                                        <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                            <input class="mdl-textfield__input" type="text" id="cardName" required />
+                                            <label class="mdl-textfield__label" for="cardName">Name on Card</label>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <!-- Billing Information -->
+                                <div class="form-section">
+                                    <h3>
+                                        <i class="material-icons">receipt</i>
+                                        Billing Information
+                                    </h3>
+                                    
+                                    <label class="mdl-checkbox mdl-js-checkbox mdl-checkbox--ripple-effect" for="sameAsShipping">
+                                        <input type="checkbox" id="sameAsShipping" class="mdl-checkbox__input" checked />
+                                        <span class="mdl-checkbox__label">Same as shipping address</span>
+                                    </label>
+                                    
+                                    <div id="billingFields" style="display: none;">
+                                        <div class="form-row">
+                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                <input class="mdl-textfield__input" type="text" id="billingFirstName" />
+                                                <label class="mdl-textfield__label" for="billingFirstName">First Name</label>
+                                            </div>
+                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                <input class="mdl-textfield__input" type="text" id="billingLastName" />
+                                                <label class="mdl-textfield__label" for="billingLastName">Last Name</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-row full">
+                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                <input class="mdl-textfield__input" type="text" id="billingAddress" />
+                                                <label class="mdl-textfield__label" for="billingAddress">Address</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-row">
+                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                <input class="mdl-textfield__input" type="text" id="billingCity" />
+                                                <label class="mdl-textfield__label" for="billingCity">City</label>
+                                            </div>
+                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                <input class="mdl-textfield__input" type="text" id="billingState" />
+                                                <label class="mdl-textfield__label" for="billingState">State</label>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="form-row">
+                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                <input class="mdl-textfield__input" type="text" id="billingZipCode" />
+                                                <label class="mdl-textfield__label" for="billingZipCode">ZIP Code</label>
+                                            </div>
+                                            <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+                                                <input class="mdl-textfield__input" type="text" id="billingCountry" />
+                                                <label class="mdl-textfield__label" for="billingCountry">Country</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </form>
+                        </div>
+
+                        <!-- Order Summary -->
+                        <div class="order-summary">
+                            <h3 class="summary-title">Order Summary</h3>
+                            
+                            <div id="orderItems" class="order-items">
+                                <!-- Order items will be loaded here -->
+                            </div>
+                            
+                            <div class="summary-item">
+                                <span>Subtotal:</span>
+                                <span id="subtotal">$0.00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Shipping:</span>
+                                <span id="shipping">$10.00</span>
+                            </div>
+                            <div class="summary-item">
+                                <span>Tax:</span>
+                                <span id="tax">$0.00</span>
+                            </div>
+                            <div class="summary-item total">
+                                <span>Total:</span>
+                                <span id="total">$0.00</span>
+                            </div>
+                            
+                            <button id="placeOrderBtn" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored place-order-btn mdl-js-ripple-effect">
+                                <span class="mdl-button__ripple-container">
+                                    <span class="mdl-ripple"></span>
+                                </span>
+                                Place Order
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loading and Error Messages -->
+    <div id="loading" class="loading" style="display: none;">
+        <div class="mdl-spinner mdl-js-spinner is-active"></div>
+        <p>Processing your order...</p>
+    </div>
+    
+    <div id="error" class="error" style="display: none;"></div>
+    <div id="success" class="success" style="display: none;"></div>
+
+    <!-- Material Design Lite JavaScript -->
+    <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+    
+    <script>
+        let cartItems = [];
+        let totalPrice = 0;
+        let totalItems = 0;
+
+        // Initialize on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+            loadCart();
+            setupEventListeners();
+            
+            // Initialize MDL components
+            if (typeof componentHandler !== 'undefined') {
+                componentHandler.upgradeAllRegistered();
+            }
+        });
+
+        // Check if user is authenticated
+        async function checkAuth() {
+            try {
+                const response = await fetch('/api/auth/me', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                if (!response.ok) {
+                    window.location.href = '/login.html?redirect=checkout';
+                    return;
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                window.location.href = '/login.html?redirect=checkout';
+            }
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            console.log('Setting up event listeners...');
+            
+            // Same as shipping checkbox
+            document.getElementById('sameAsShipping').addEventListener('change', function() {
+                const billingFields = document.getElementById('billingFields');
+                if (this.checked) {
+                    billingFields.style.display = 'none';
+                } else {
+                    billingFields.style.display = 'block';
+                }
+            });
+
+            // Place order button
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+            console.log('Place order button element:', placeOrderBtn);
+            
+            if (placeOrderBtn) {
+                placeOrderBtn.addEventListener('click', placeOrder);
+                console.log('Event listener attached to place order button');
+            } else {
+                console.error('Place order button not found!');
+            }
+        }
+
+        // Load cart items
+        async function loadCart() {
+            try {
+                const response = await fetch('/api/cart');
+                if (!response.ok) {
+                    throw new Error('Failed to load cart');
+                }
+                
+                const data = await response.json();
+                cartItems = data.cartItems || [];
+                totalPrice = data.totalPrice || 0;
+                totalItems = data.totalItems || 0;
+                
+                if (cartItems.length === 0) {
+                    showError('Your cart is empty. Please add items before checkout.');
+                    setTimeout(() => {
+                        window.location.href = '/products.html';
+                    }, 2000);
+                    return;
+                }
+                
+                displayOrderSummary();
+            } catch (error) {
+                console.error('Error loading cart:', error);
+                showError('Error loading cart. Please try again.');
+            }
+        }
+
+        // Display order summary
+        function displayOrderSummary() {
+            const orderItemsContainer = document.getElementById('orderItems');
+            orderItemsContainer.innerHTML = '';
+
+            cartItems.forEach(item => {
+                const orderItem = document.createElement('div');
+                orderItem.className = 'order-item';
+                
+                orderItem.innerHTML = `
+                    <img src="${item.product.images || 'https://via.placeholder.com/50x50?text=No+Image'}" 
+                         alt="${item.product.name}" class="item-image">
+                    <div class="item-details">
+                        <div class="item-name">${item.product.name}</div>
+                        <div class="item-quantity">Qty: ${item.quantity}</div>
+                    </div>
+                    <div class="item-price">$${(item.product.price * item.quantity).toFixed(2)}</div>
+                `;
+                
+                orderItemsContainer.appendChild(orderItem);
+            });
+
+            // Update totals
+            const shipping = totalPrice > 50 ? 0 : 10; // Free shipping over $50
+            const tax = totalPrice * 0.08; // 8% tax
+            const total = totalPrice + shipping + tax;
+
+            document.getElementById('subtotal').textContent = `$${totalPrice.toFixed(2)}`;
+            document.getElementById('shipping').textContent = shipping === 0 ? 'FREE' : `$${shipping.toFixed(2)}`;
+            document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        // Place order
+        async function placeOrder() {
+            console.log('Place order button clicked');
+            
+            // Check if cart is empty
+            if (cartItems.length === 0) {
+                showError('Your cart is empty. Please add items before placing an order.');
+                return;
+            }
+            
+            // Validate form
+            if (!validateForm()) {
+                console.log('Form validation failed');
+                return;
+            }
+
+            console.log('Form validation passed, proceeding with order...');
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+            placeOrderBtn.disabled = true;
+            placeOrderBtn.innerHTML = '<div class="loading"><div class="mdl-spinner mdl-js-spinner is-active"></div>Placing order...</div>';
+
+            try {
+                // Collect form data
+                const orderData = {
+                    shipping: {
+                        firstName: document.getElementById('shippingFirstName').value,
+                        lastName: document.getElementById('shippingLastName').value,
+                        address: document.getElementById('shippingAddress').value,
+                        city: document.getElementById('shippingCity').value,
+                        state: document.getElementById('shippingState').value,
+                        zipCode: document.getElementById('shippingZipCode').value,
+                        country: document.getElementById('shippingCountry').value
+                    },
+                    payment: {
+                        cardNumber: document.getElementById('cardNumber').value,
+                        cardExpiry: document.getElementById('cardExpiry').value,
+                        cardCvv: document.getElementById('cardCvv').value,
+                        cardName: document.getElementById('cardName').value
+                    },
+                    billing: document.getElementById('sameAsShipping').checked ? null : {
+                        firstName: document.getElementById('billingFirstName').value,
+                        lastName: document.getElementById('billingLastName').value,
+                        address: document.getElementById('billingAddress').value,
+                        city: document.getElementById('billingCity').value,
+                        state: document.getElementById('billingState').value,
+                        zipCode: document.getElementById('billingZipCode').value,
+                        country: document.getElementById('billingCountry').value
+                    },
+                    items: cartItems.map(item => ({
+                        productId: item.product.id,
+                        quantity: item.quantity,
+                        price: item.product.price
+                    })),
+                    subtotal: totalPrice,
+                    shippingCost: totalPrice > 50 ? 0 : 10,
+                    tax: totalPrice * 0.08,
+                    total: totalPrice + (totalPrice > 50 ? 0 : 10) + (totalPrice * 0.08)
+                };
+
+                console.log('Sending order data:', orderData);
+                
+                const response = await fetch('/api/orders', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(orderData)
+                });
+
+                console.log('Order response status:', response.status);
+                
+                if (!response.ok) {
+                    const errorText = await response.text();
+                    console.log('Error response:', errorText);
+                    throw new Error(`HTTP ${response.status}: ${errorText}`);
+                }
+                
+                const data = await response.json();
+                console.log('Order response data:', data);
+
+                if (data.success) {
+
+
+                    showSuccess('Order placed successfully! Redirecting...');
+                    
+                    // Clear cart
+                    await fetch('/api/cart/clear', {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
+                    
+                    // Redirect to order success page with order details
+                    const orderId = data.orderId;
+                    const orderTotal = totalPrice + (totalPrice > 50 ? 0 : 10) + (totalPrice * 0.08);
+                    
+                    setTimeout(() => {
+                        window.location.href = `/order-success.html?orderId=${orderId}&total=${orderTotal.toFixed(2)}`;
+                    }, 1500);
+                } else {
+                    showError('Order failed: ' + data.message);
+                    resetPlaceOrderButton();
+                }
+            } catch (error) {
+                console.error('Error placing order:', error);
+                showError('Error placing order. Please try again.');
+                resetPlaceOrderButton();
+            }
+        }
+
+        // Validate form
+        function validateForm() {
+            const requiredFields = [
+                'shippingFirstName', 'shippingLastName', 'shippingAddress',
+                'shippingCity', 'shippingState', 'shippingZipCode', 'shippingCountry',
+                'cardNumber', 'cardExpiry', 'cardCvv', 'cardName'
+            ];
+
+            for (const fieldId of requiredFields) {
+                const field = document.getElementById(fieldId);
+                if (!field.value.trim()) {
+                    showError(`Please fill in ${field.previousElementSibling.textContent}`);
+                    field.focus();
+                    return false;
+                }
+            }
+
+            // Validate card number (basic validation)
+            const cardNumber = document.getElementById('cardNumber').value.replace(/\s/g, '');
+            if (cardNumber.length < 13 || cardNumber.length > 19) {
+                showError('Please enter a valid card number');
+                return false;
+            }
+
+            // Validate expiry date
+            const expiry = document.getElementById('cardExpiry').value;
+            if (!/^\d{2}\/\d{2}$/.test(expiry)) {
+                showError('Please enter expiry date in MM/YY format');
+                return false;
+            }
+
+            // Validate CVV
+            const cvv = document.getElementById('cardCvv').value;
+            if (!/^\d{3,4}$/.test(cvv)) {
+                showError('Please enter a valid CVV');
+                return false;
+            }
+
+            return true;
+        }
+
+        // Reset place order button
+        function resetPlaceOrderButton() {
+            const placeOrderBtn = document.getElementById('placeOrderBtn');
+            placeOrderBtn.disabled = false;
+            placeOrderBtn.innerHTML = 'Place Order';
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorDiv = document.getElementById('error');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+            }, 5000);
+        }
+
+        // Show success message
+        function showSuccess(message) {
+            const successDiv = document.getElementById('success');
+            successDiv.textContent = message;
+            successDiv.style.display = 'block';
+            setTimeout(() => {
+                successDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

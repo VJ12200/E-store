@@ -1,0 +1,621 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>My Dashboard - E-Store</title>
+  
+  <!-- Material Design Lite CSS -->
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <link rel="stylesheet" href="stylesheets/mdl-custom.css">
+  
+  <style>
+    .dashboard-container {
+      background: #fafafa;
+      min-height: 100vh;
+    }
+    
+    .welcome-section {
+      background: linear-gradient(135deg, #2196F3 0%, #21CBF3 100%);
+      color: white;
+      padding: 40px 0;
+      text-align: center;
+    }
+    
+    .welcome-content h1 {
+      font-size: 2.5rem;
+      font-weight: 300;
+      margin-bottom: 10px;
+    }
+    
+    .welcome-content p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      margin: 0;
+    }
+    
+    .dashboard-content {
+      padding: 32px;
+    }
+    
+    .quick-actions {
+      margin-bottom: 32px;
+    }
+    
+    .quick-actions .mdl-card {
+      margin-bottom: 16px;
+    }
+    
+    .quick-actions .mdl-card__title {
+      background: var(--mdl-color-primary);
+      color: white;
+    }
+    
+    .quick-actions .mdl-card__title-text {
+      font-size: 1.1rem;
+      font-weight: 500;
+    }
+    
+    .quick-actions .mdl-card__supporting-text {
+      padding: 16px;
+    }
+    
+    .quick-actions .mdl-button {
+      margin-top: 8px;
+    }
+    
+    .dashboard-section {
+      margin-bottom: 32px;
+    }
+    
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 16px;
+    }
+    
+    .section-title {
+      font-size: 1.5rem;
+      font-weight: 500;
+      color: #333;
+      margin: 0;
+    }
+    
+    .order-card {
+      margin-bottom: 16px;
+      transition: box-shadow 0.3s ease;
+    }
+    
+    .order-card:hover {
+      box-shadow: 0 4px 16px rgba(0,0,0,0.15);
+    }
+    
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+    }
+    
+    .order-id {
+      font-weight: 500;
+      color: #333;
+      font-size: 1.1rem;
+    }
+    
+    .order-date {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    .order-status {
+      padding: 4px 12px;
+      border-radius: 16px;
+      font-size: 0.8rem;
+      font-weight: 500;
+      text-transform: uppercase;
+    }
+    
+    .status-pending {
+      background: #fff3cd;
+      color: #856404;
+    }
+    
+    .status-processing {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+    
+    .status-in_transit {
+      background: #e3f2fd;
+      color: #1565c0;
+    }
+    
+    .status-out_for_delivery {
+      background: #fff8e1;
+      color: #b28704;
+    }
+    
+    .status-shipped {
+      background: #d4edda;
+      color: #155724;
+    }
+    
+    .status-delivered {
+      background: #d1ecf1;
+      color: #0c5460;
+    }
+    
+    .status-cancelled {
+      background: #f8d7da;
+      color: #721c24;
+    }
+    
+    .order-total {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #F44336;
+      margin-bottom: 12px;
+    }
+    
+    .order-items {
+      margin-top: 12px;
+    }
+    
+    .order-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 8px 0;
+      border-bottom: 1px solid #e0e0e0;
+    }
+    
+    .order-item:last-child {
+      border-bottom: none;
+    }
+    
+    .item-name {
+      font-weight: 500;
+      color: #333;
+    }
+    
+    .item-quantity {
+      color: #666;
+      font-size: 0.9rem;
+    }
+    
+    .item-price {
+      font-weight: 500;
+      color: #F44336;
+    }
+    
+    .no-orders {
+      text-align: center;
+      padding: 40px;
+      color: #666;
+      font-style: italic;
+    }
+    
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      color: #666;
+    }
+    
+    .loading .mdl-spinner {
+      margin-right: 16px;
+    }
+    
+    .error {
+      background: #ffebee;
+      color: #c62828;
+      padding: 16px;
+      border-radius: 4px;
+      margin: 16px 0;
+      border-left: 4px solid #F44336;
+    }
+    
+    .success {
+      background: #e8f5e8;
+      color: #2e7d32;
+      padding: 16px;
+      border-radius: 4px;
+      margin: 16px 0;
+      border-left: 4px solid #4CAF50;
+    }
+
+    /* Improve padding for My Orders and Order History sections */
+    .dashboard-section > .mdl-card > .mdl-card__supporting-text {
+      padding: 24px;
+    }
+
+    /* Make My Orders and Order History cards span full width */
+    .dashboard-section > .mdl-card {
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
+    }
+
+    /* Ensure individual order cards have comfortable padding */
+    .order-card .mdl-card__supporting-text {
+      padding: 20px 24px;
+    }
+
+    /* Small spacing above lists inside the sections */
+    #ordersContainer, #historyContainer {
+      padding-top: 8px;
+    }
+
+    /* Compact footer height */
+    .mdl-mini-footer {
+      padding: 10px 16px;
+    }
+
+    .mdl-mini-footer .mdl-mini-footer__left-section,
+    .mdl-mini-footer .mdl-mini-footer__right-section {
+      display: flex;
+      align-items: center;
+    }
+
+    .mdl-mini-footer .mdl-logo {
+      margin: 0;
+    }
+
+    .mdl-mini-footer__link-list li {
+      margin-right: 12px;
+    }
+  </style>
+</head>
+<body>
+  <div class="mdl-layout mdl-js-layout mdl-layout--fixed-header">
+    <!-- Header -->
+    <header class="mdl-layout__header">
+      <div class="mdl-layout__header-row">
+        <span class="mdl-layout-title">
+          <i class="material-icons">dashboard</i>
+          My Dashboard
+        </span>
+        <div class="mdl-layout-spacer"></div>
+        <nav class="mdl-navigation mdl-layout--large-screen-only">
+          <a class="mdl-navigation__link" href="/">Home</a>
+          <a class="mdl-navigation__link" href="products.html">Browse Products</a>
+          <a class="mdl-navigation__link" href="cart.html">
+            <i class="material-icons">shopping_cart</i>
+            Cart
+            <span class="mdl-badge" data-badge="0" id="cartBadge"></span>
+          </a>
+          <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" 
+                  onclick="logout()">
+            Logout
+          </button>
+        </nav>
+        
+        <!-- Mobile menu button -->
+        <button class="mdl-button mdl-js-button mdl-button--icon mdl-layout--small-screen-only" 
+                id="menuButton">
+          <i class="material-icons">more_vert</i>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile Navigation Drawer -->
+    <div class="mdl-layout__drawer mdl-layout--small-screen-only">
+      <span class="mdl-layout-title">Dashboard</span>
+      <nav class="mdl-navigation">
+        <a class="mdl-navigation__link" href="/">Home</a>
+        <a class="mdl-navigation__link" href="products.html">Browse Products</a>
+        <a class="mdl-navigation__link" href="cart.html">
+          <i class="material-icons">shopping_cart</i>
+          Cart
+          <span class="mdl-badge" data-badge="0" id="mobileCartBadge"></span>
+        </a>
+        <button class="mdl-button mdl-js-button mdl-button--raised mdl-button--accent" 
+                onclick="logout()">
+          Logout
+        </button>
+      </nav>
+    </div>
+
+    <!-- Main Content -->
+    <main class="mdl-layout__content">
+      <!-- Welcome Section -->
+      <section class="welcome-section">
+        <div class="mdl-grid">
+          <div class="mdl-cell mdl-cell--12-col">
+            <div class="welcome-content">
+              <h1>Welcome to Your Dashboard</h1>
+              <p>Manage your orders and account settings</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Dashboard Content -->
+      <div class="dashboard-content">
+        
+
+        <!-- My Orders Section -->
+        <div class="dashboard-section">
+          <div class="section-header">
+            <h2 class="section-title">My Orders</h2>
+          </div>
+          <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__supporting-text">
+              <p>Track and manage your recent orders</p>
+              <div id="ordersLoading" class="loading">
+                <div class="mdl-spinner mdl-js-spinner is-active"></div>
+                <p>Loading your orders...</p>
+              </div>
+              <div id="ordersError" class="error" style="display: none;"></div>
+              <div id="ordersContainer"></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Order History Section -->
+        <div class="dashboard-section">
+          <div class="section-header">
+            <h2 class="section-title">Order History</h2>
+          </div>
+          <div class="mdl-card mdl-shadow--2dp">
+            <div class="mdl-card__supporting-text">
+              <p>View all your past orders</p>
+              <div id="historyLoading" class="loading">
+                <div class="mdl-spinner mdl-js-spinner is-active"></div>
+                <p>Loading order history...</p>
+              </div>
+              <div id="historyError" class="error" style="display: none;"></div>
+              <div id="historyContainer"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="mdl-mini-footer">
+      <div class="mdl-mini-footer__left-section">
+        <div class="mdl-logo">E-Store Dashboard</div>
+      </div>
+      <div class="mdl-mini-footer__right-section">
+        <p>&copy; 2025 E-Store.</p>
+      </div>
+    </footer>
+  </div>
+
+  <div id="status" class="mdl-snackbar" style="display: none;"></div>
+
+  <!-- Material Design Lite JavaScript -->
+  <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  
+  <script>
+    // Check if user is authenticated
+    async function checkAuth() {
+      try {
+        const response = await fetch('/api/auth/me', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        
+        if (!response.ok) {
+          window.location.href = '/';
+          return;
+        }
+        
+        const user = await response.json();
+        console.log('User authenticated:', user);
+        return user;
+      } catch (error) {
+        console.error('Auth check failed:', error);
+        window.location.href = '/';
+      }
+    }
+
+    // Logout function
+    async function logout() {
+      try {
+        const response = await fetch('/api/auth/logout', {
+          method: 'POST',
+          credentials: 'include'
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+          showSnackbar('Logged out successfully! Redirecting to home page...', 'success');
+          setTimeout(() => {
+            window.location.href = '/';
+          }, 2000);
+        } else {
+          showSnackbar('Logout failed: ' + data.message, 'error');
+        }
+      } catch (error) {
+        showSnackbar('Logout failed: ' + error.message, 'error');
+      }
+    }
+
+    // Show snackbar notification
+    function showSnackbar(message, type = 'info') {
+      // Remove existing snackbar
+      const existingSnackbar = document.querySelector('.mdl-snackbar');
+      if (existingSnackbar) {
+        existingSnackbar.remove();
+      }
+      
+      // Create new snackbar
+      const snackbar = document.createElement('div');
+      snackbar.className = `mdl-snackbar ${type === 'error' ? 'error' : type === 'success' ? 'success' : ''}`;
+      snackbar.textContent = message;
+      
+      document.body.appendChild(snackbar);
+      
+      // Show snackbar
+      setTimeout(() => {
+        snackbar.classList.add('mdl-snackbar--active');
+      }, 100);
+      
+      // Hide snackbar after 3 seconds
+      setTimeout(() => {
+        snackbar.classList.remove('mdl-snackbar--active');
+        setTimeout(() => {
+          snackbar.remove();
+        }, 300);
+      }, 3000);
+    }
+
+    // Update cart count
+    async function updateCartCount() {
+      try {
+        const response = await fetch('/api/cart/count');
+        if (response.ok) {
+          const data = await response.json();
+          const count = data.count || 0;
+          
+          // Update desktop badge
+          const desktopBadge = document.getElementById('cartBadge');
+          if (desktopBadge) {
+            desktopBadge.setAttribute('data-badge', count);
+          }
+          
+          // Update mobile badge
+          const mobileBadge = document.getElementById('mobileCartBadge');
+          if (mobileBadge) {
+            mobileBadge.setAttribute('data-badge', count);
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching cart count:', error);
+      }
+    }
+    
+    // Load user orders
+    async function loadUserOrders() {
+      try {
+        document.getElementById('ordersLoading').style.display = 'flex';
+        document.getElementById('ordersError').style.display = 'none';
+        
+        const response = await fetch('/api/orders', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to load orders');
+        }
+        
+        const data = await response.json();
+        const orders = data.orders || [];
+        
+        displayOrders(orders, 'ordersContainer');
+        document.getElementById('ordersLoading').style.display = 'none';
+      } catch (error) {
+        console.error('Error loading orders:', error);
+        document.getElementById('ordersLoading').style.display = 'none';
+        document.getElementById('ordersError').style.display = 'block';
+        document.getElementById('ordersError').textContent = 'Error loading orders. Please try again.';
+      }
+    }
+
+    // Load order history
+    async function loadOrderHistory() {
+      try {
+        document.getElementById('historyLoading').style.display = 'flex';
+        document.getElementById('historyError').style.display = 'none';
+        
+        const response = await fetch('/api/orders/history', {
+          method: 'GET',
+          credentials: 'include'
+        });
+        
+        if (!response.ok) {
+          throw new Error('Failed to load order history');
+        }
+        
+        const data = await response.json();
+        const orders = data.orders || [];
+        
+        displayOrders(orders, 'historyContainer');
+        document.getElementById('historyLoading').style.display = 'none';
+      } catch (error) {
+        console.error('Error loading order history:', error);
+        document.getElementById('historyLoading').style.display = 'none';
+        document.getElementById('historyError').style.display = 'block';
+        document.getElementById('historyError').textContent = 'Error loading order history. Please try again.';
+      }
+    }
+
+    // Display orders
+    function displayOrders(orders, containerId) {
+      const container = document.getElementById(containerId);
+      container.innerHTML = '';
+
+      if (orders.length === 0) {
+        container.innerHTML = '<div class="no-orders">No orders found.</div>';
+        return;
+      }
+
+      orders.forEach(order => {
+        const orderCard = createOrderCard(order);
+        container.appendChild(orderCard);
+      });
+    }
+
+    // Create order card
+    function createOrderCard(order) {
+      const card = document.createElement('div');
+      card.className = 'mdl-card mdl-shadow--2dp order-card';
+      
+      const orderDate = new Date(order.createdAt).toLocaleDateString();
+      const statusClass = `status-${order.status.toLowerCase()}`;
+      
+      card.innerHTML = `
+        <div class="mdl-card__supporting-text">
+          <div class="order-header">
+            <div>
+              <div class="order-id">Order #${order.id}</div>
+              <div class="order-date">${orderDate}</div>
+            </div>
+            <div class="order-status ${statusClass}">${order.status}</div>
+          </div>
+          <div class="order-total">Total: $${order.total}</div>
+          <div class="order-items">
+            ${order.items ? order.items.map(item => `
+              <div class="order-item">
+                <span class="item-name">${item.productName || 'Product'}</span>
+                <span class="item-quantity">Qty: ${item.quantity}</span>
+                <span class="item-price">$${item.price}</span>
+              </div>
+            `).join('') : ''}
+          </div>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // Initialize dashboard
+    async function initDashboard() {
+      const user = await checkAuth();
+      if (user) {
+        loadUserOrders();
+        loadOrderHistory();
+        updateCartCount();
+      }
+    }
+
+    // Initialize on page load
+    document.addEventListener('DOMContentLoaded', function() {
+      initDashboard();
+      
+      // Initialize MDL components
+      if (typeof componentHandler !== 'undefined') {
+        componentHandler.upgradeAllRegistered();
+      }
+    });
+  </script>
+</body>
+</html>
+</html>

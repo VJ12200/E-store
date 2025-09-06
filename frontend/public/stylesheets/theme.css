@@ -1,0 +1,84 @@
+/* Modern Theme for E-Store Frontend - Static Light Retail Palette */
+
+:root {
+  --bg: #f5f7fa;
+  --surface: #ffffff;
+  --surface-2: #f8fafc;
+  --text: #0f172a;
+  --muted: #475569;
+  --primary: #2874f0;
+  --primary-600: #1f5ec6;
+  --accent: #ff9f00;
+  --success: #2aa952;
+  --danger: #e11d48;
+  --warning: #f59e0b;
+  --shadow: 0 10px 30px rgba(2, 6, 23, 0.08);
+}
+
+/* Base */
+body { background: var(--bg); color: var(--text); }
+
+/* Header */
+.app-header { background: var(--primary); color: #fff; }
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+.brand .dot { width: 10px; height: 10px; border-radius: 50%; background: #fff; opacity: .85; }
+
+.nav-link { color: #e8efff !important; transition: opacity .2s ease; }
+.nav-link:hover { opacity: .9; }
+
+/* theme toggle removed */
+
+/* Hero */
+.hero-modern { position: relative; padding: 72px 0 40px; background: linear-gradient(180deg, rgba(255,255,255,0), rgba(40,116,240,.08)); }
+.hero-modern .headline {
+  font-size: 3rem;
+  line-height: 1.1;
+  font-weight: 800;
+  letter-spacing: -0.02em;
+}
+.hero-modern .subhead {
+  color: var(--muted);
+  font-size: 1.125rem;
+  max-width: 720px;
+  margin: 16px auto 0;
+}
+.cta-row { margin-top: 28px; display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+
+.btn-primary { background: var(--primary); color: white; border: none; border-radius: 8px; padding: 12px 18px; box-shadow: var(--shadow); }
+.btn-ghost { background: transparent; color: var(--primary); border: 1px solid var(--primary); border-radius: 8px; padding: 12px 18px; }
+
+/* Product card */
+.product-card { background: #fff; border: 1px solid rgba(2,6,23,0.06); border-radius: 12px; overflow: hidden; }
+.product-card .product-image { height: 220px; }
+.product-card .product-name { color: var(--text); font-weight: 600; }
+.product-card .product-price { color: var(--primary); font-weight: 700; }
+.product-card .product-category { color: var(--muted); }
+
+/* Footer */
+.modern-footer { border-top: 1px solid rgba(2,6,23,0.08); background: #fff; }
+
+/* Utilities */
+.glass { background: var(--surface); border: 1px solid rgba(148,163,184,0.12); border-radius: 14px; }
+.shadow-xl { box-shadow: var(--shadow); }
+.max-w-screen { max-width: 1200px; margin: 0 auto; }
+.mt-16 { margin-top: 16px; } .mt-24 { margin-top: 24px; } .mt-32 { margin-top: 32px; }
+.py-24 { padding-top: 24px; padding-bottom: 24px; }
+
+/* Products grid spacing and card media fix (use MDL grid, add gentle padding) */
+#productsGrid { display: flex; flex-wrap: wrap; }
+#productsGrid .mdl-cell { padding: 12px; }
+#productsGrid.mdl-grid { justify-content: center; }
+.mdl-cell.mdl-cell--4-col { max-width: 360px; }
+.mdl-card__media { padding: 0; }
+
+/* Removed enforced single-row feature layout */
+
+

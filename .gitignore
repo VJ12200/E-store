@@ -1,0 +1,29 @@
+# Node dependencies
+node_modules/
+
+# Environment files
+.env
+.env.*
+backend/.env
+backend/.env.*
+
+# Logs
+logs
+*.log
+debug.log
+
+# Coverage
+coverage/
+
+# OS junk
+.DS_Store
+Thumbs.db
+
+# Editors/IDE
+.vscode/
+.idea/
+
+
+
+# Scripts
+backend/scripts/

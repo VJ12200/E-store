@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products - E-commerce Store</title>
+    <link rel="stylesheet" href="stylesheets/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="stylesheets/theme.css">
+    <link rel="stylesheet" href="stylesheets/mdl-custom.css">
+    <style>
+        .products-container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+        
+        .page-header { text-align: center; margin-bottom: 32px; }
+        
+        .page-header h1 { color: #1a1a1a; font-size: 2.5rem; font-weight: 700; margin-bottom: 8px; letter-spacing: -0.02em; }
+        
+        .filters { background: #ffffff; padding: 20px; border-radius: 12px; margin-bottom: 30px; display: flex; flex-wrap: wrap; gap: 20px; align-items: center; border: 1px solid #e2e8f0; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        
+        .filter-group {
+            display: flex;
+            flex-direction: column;
+            gap: 5px;
+        }
+        
+        .filter-group label { font-weight: 600; color: #334155; }
+        
+        .filter-group select, .filter-group input { padding: 10px 12px; border: 1px solid #e2e8f0; border-radius: 8px; font-size: 14px; outline: none; transition: border-color .2s ease, box-shadow .2s ease; background: #fff; }
+        .filter-group select:focus, .filter-group input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
+        
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .search-box input {
+            width: 100%;
+        }
+        
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+        
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        
+        .product-image {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            background: #f0f0f0;
+        }
+        
+        .product-info {
+            padding: 15px;
+        }
+        
+        .product-name {
+            font-size: 1.2em;
+            font-weight: bold;
+            color: #007bff;
+            margin-bottom: 8px;
+            cursor: pointer;
+            text-decoration: underline;
+            transition: color 0.3s ease;
+        }
+
+        .product-name:hover {
+            color: #0056b3;
+        }
+        
+        .product-category {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+        
+        .product-price {
+            font-size: 1.3em;
+            font-weight: bold;
+            color: #e74c3c;
+            margin-bottom: 10px;
+        }
+        
+        .product-stock {
+            font-size: 0.9em;
+            margin-bottom: 15px;
+        }
+        
+        .in-stock {
+            color: #27ae60;
+        }
+        
+        .out-of-stock {
+            color: #e74c3c;
+        }
+        
+        .product-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .btn {
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+        
+        .btn-success {
+            background: #27ae60;
+            color: white;
+        }
+        
+        .btn-success:hover {
+            background: #229954;
+        }
+        
+        .btn:disabled {
+            background: #bdc3c7;
+            cursor: not-allowed;
+        }
+        
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .quantity-input {
+            width: 60px;
+            text-align: center;
+            padding: 5px;
+            border: 1px solid #ddd;
+            border-radius: 3px;
+        }
+        
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+        }
+        
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+        }
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 24px 0 40px;
+            flex-wrap: wrap;
+        }
+        .pagination button {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            background: #fff;
+            cursor: pointer;
+            border-radius: 4px;
+            min-width: 36px;
+        }
+        .pagination button.active {
+            background: #3498db;
+            color: #fff;
+            border-color: #3498db;
+        }
+        .pagination button:disabled {
+            opacity: .6;
+            cursor: not-allowed;
+        }
+        
+        .cart-count {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #e74c3c;
+            color: white;
+            padding: 10px 14px;
+            border-radius: 50px;
+            font-weight: bold;
+            z-index: 1000;
+            display: none;
+            cursor: pointer;
+            align-items: center;
+            gap: 6px;
+            user-select: none;
+        }
+
+        .cart-count .icon {
+            line-height: 1;
+            font-size: 16px;
+        }
+        
+        .nav-links {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .nav-links a {
+            color: #007bff;
+            text-decoration: none;
+            margin: 0 15px;
+            padding: 8px 16px;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            background-color: #f8f9fa;
+        }
+        
+        /* Floating toolbar */
+        .floating-nav {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 10px 12px;
+            box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            z-index: 1000;
+        }
+        .floating-nav a { text-decoration: none; }
+        .floating-nav .btn-link {
+            background: #2563eb;
+            color: #ffffff;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            border: none;
+        }
+        .floating-nav .btn-ghost {
+            background: transparent;
+            color: #2563eb;
+            padding: 8px 12px;
+            border-radius: 8px;
+            font-weight: 600;
+            border: 1px solid #2563eb;
+        }
+        @media (max-width: 768px) {
+            .floating-nav { display: none; }
+        }
+        
+        @media (max-width: 768px) {
+            .filters {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .products-grid {
+                grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="cart-count" id="cartCount" role="button" aria-label="Open shopping cart" tabindex="0">
+        <span class="icon" aria-hidden="true">🛒</span>
+        <span id="cartCountNumber">0</span>
+    </div>
+    
+    <!-- Floating toolbar: Home, Login -->
+    <div class="floating-nav" aria-label="Quick navigation">
+        <a href="/" class="btn-link">Home</a>
+        <a href="login.html" class="btn-ghost" id="floatingLogin">Login</a>
+    </div>
+    
+    <div class="products-container">
+        <div class="nav-links" style="display:none;"></div>
+        
+        <div class="page-header">
+            <h1>Our Products</h1>
+        </div>
+        
+        <div class="filters">
+            <div class="search-box">
+                <label for="search">Search Products:</label>
+                <input type="text" id="search" placeholder="Search by name or description...">
+            </div>
+            
+            <div class="filter-group">
+                <label for="category">Category:</label>
+                <select id="category">
+                    <option value="">All Categories</option>
+                    <option value="Electronics">Electronics</option>
+                    <option value="Clothing">Clothing</option>
+                    <option value="Books">Books</option>
+                    <option value="Home & Garden">Home & Garden</option>
+                    <option value="Sports">Sports</option>
+                    <option value="Beauty">Beauty</option>
+                </select>
+            </div>
+            
+            <div class="filter-group">
+                <label for="sortBy">Sort By:</label>
+                <select id="sortBy">
+                    <option value="name">Name</option>
+                    <option value="price">Price</option>
+                    <option value="rating">Rating</option>
+                    <option value="newest">Newest</option>
+                </select>
+            </div>
+        </div>
+        
+        <div id="loading" class="loading">Loading products...</div>
+        <div id="error" class="error" style="display: none;"></div>
+        <div id="productsGrid" class="products-grid"></div>
+        <div id="pagination" class="pagination" style="display:none;"></div>
+    </div>
+
+    <script>
+        let products = [];
+        let filteredProducts = [];
+        let currentPage = 1;
+        const pageSize = 16; // 4 rows * 4 columns on desktop
+
+        // Load products on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthStatus();
+            loadProducts();
+            setupEventListeners();
+            const cartCountEl = document.getElementById('cartCount');
+            cartCountEl.addEventListener('click', () => {
+                window.location.href = 'cart.html';
+            });
+            cartCountEl.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    window.location.href = 'cart.html';
+                }
+            });
+            ensureGridLayout();
+            window.addEventListener('resize', ensureGridLayout);
+        });
+
+        function setupEventListeners() {
+            document.getElementById('search').addEventListener('input', filterProducts);
+            document.getElementById('category').addEventListener('change', filterProducts);
+            document.getElementById('sortBy').addEventListener('change', filterProducts);
+        }
+
+        // Check if user is authenticated and update UI accordingly
+        async function checkAuthStatus() {
+            try {
+                const response = await fetch('/api/auth/me', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                if (response.ok) {
+                    // User is logged in
+                    const loginEl = document.getElementById('loginLink');
+                    const logoutEl = document.getElementById('logoutLink');
+                    if (loginEl) loginEl.style.display = 'none';
+                    if (logoutEl) logoutEl.style.display = 'inline';
+                    const fl = document.getElementById('floatingLogin');
+                    if (fl) fl.style.display = 'none';
+                    updateCartCount();
+                } else {
+                    // User is not logged in
+                    const loginEl = document.getElementById('loginLink');
+                    const logoutEl = document.getElementById('logoutLink');
+                    if (loginEl) loginEl.style.display = 'inline';
+                    if (logoutEl) logoutEl.style.display = 'none';
+                    const fl = document.getElementById('floatingLogin');
+                    if (fl) fl.style.display = 'inline-block';
+                    const cartCount = document.getElementById('cartCount');
+                    cartCount.style.display = 'none';
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                // Default to not logged in
+                const loginEl = document.getElementById('loginLink');
+                const logoutEl = document.getElementById('logoutLink');
+                if (loginEl) loginEl.style.display = 'inline';
+                if (logoutEl) logoutEl.style.display = 'none';
+                const fl = document.getElementById('floatingLogin');
+                if (fl) fl.style.display = 'inline-block';
+                const cartCount = document.getElementById('cartCount');
+                cartCount.style.display = 'none';
+            }
+        }
+
+        async function loadProducts() {
+            try {
+                document.getElementById('loading').style.display = 'block';
+                document.getElementById('error').style.display = 'none';
+                
+                const response = await fetch('/api/search/products');
+                if (!response.ok) {
+                    throw new Error('Failed to load products');
+                }
+                
+                const data = await response.json();
+                products = data.products || [];
+                filteredProducts = [...products];
+                
+                displayProducts();
+                document.getElementById('loading').style.display = 'none';
+            } catch (error) {
+                console.error('Error loading products:', error);
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('error').style.display = 'block';
+                document.getElementById('error').textContent = 'Error loading products. Please try again.';
+            }
+        }
+
+        function filterProducts() {
+            const searchTerm = document.getElementById('search').value.toLowerCase();
+            const category = document.getElementById('category').value;
+            const sortBy = document.getElementById('sortBy').value;
+
+            filteredProducts = products.filter(product => {
+                const matchesSearch = product.name.toLowerCase().includes(searchTerm) ||
+                                    product.description.toLowerCase().includes(searchTerm);
+                const matchesCategory = !category || product.category === category;
+                
+                return matchesSearch && matchesCategory;
+            });
+
+            // Sort products
+            filteredProducts.sort((a, b) => {
+                switch (sortBy) {
+                    case 'price':
+                        return a.price - b.price;
+                    case 'rating':
+                        return (b.ratings || 0) - (a.ratings || 0);
+                    case 'newest':
+                        return new Date(b.createdAt) - new Date(a.createdAt);
+                    default:
+                        return a.name.localeCompare(b.name);
+                }
+            });
+
+            currentPage = 1;
+            displayProducts();
+        }
+
+        function displayProducts() {
+            const productsGrid = document.getElementById('productsGrid');
+            productsGrid.innerHTML = '';
+            ensureGridLayout();
+
+            if (filteredProducts.length === 0) {
+                productsGrid.innerHTML = '<div style="grid-column: 1/-1; text-align: center; padding: 40px; color: #666;">No products found matching your criteria.</div>';
+                document.getElementById('pagination').style.display = 'none';
+                return;
+            }
+
+            const totalPages = Math.ceil(filteredProducts.length / pageSize) || 1;
+            if (currentPage > totalPages) currentPage = totalPages;
+            const start = (currentPage - 1) * pageSize;
+            const end = start + pageSize;
+            const pageItems = filteredProducts.slice(start, end);
+
+            pageItems.forEach(product => {
+                const productCard = createProductCard(product);
+                productsGrid.appendChild(productCard);
+            });
+
+            renderPagination(totalPages);
+        }
+
+        function ensureGridLayout() {
+            const grid = document.getElementById('productsGrid');
+            if (!grid) return;
+            grid.style.display = 'grid';
+            grid.style.gridTemplateColumns = 'repeat(4, 1fr)';
+            grid.style.gap = '20px';
+        }
+
+        function renderPagination(totalPages) {
+            const container = document.getElementById('pagination');
+            if (totalPages <= 1) {
+                container.style.display = 'none';
+                container.innerHTML = '';
+                return;
+            }
+            container.style.display = 'flex';
+            let html = '';
+            html += `<button ${currentPage === 1 ? 'disabled' : ''} onclick="gotoPage(${currentPage - 1})">Prev</button>`;
+            for (let i = 1; i <= totalPages; i++) {
+                html += `<button class="${i === currentPage ? 'active' : ''}" onclick="gotoPage(${i})">${i}</button>`;
+            }
+            html += `<button ${currentPage === totalPages ? 'disabled' : ''} onclick="gotoPage(${currentPage + 1})">Next</button>`;
+            container.innerHTML = html;
+        }
+
+        function gotoPage(page) {
+            currentPage = page;
+            displayProducts();
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function createProductCard(product) {
+            const card = document.createElement('div');
+            card.className = 'product-card';
+            
+            const isInStock = product.stock > 0;
+            const stockText = isInStock ? `In Stock (${product.stock})` : 'Out of Stock';
+            const stockClass = isInStock ? 'in-stock' : 'out-of-stock';
+            
+            card.innerHTML = `
+                <img src="${product.images || 'https://via.placeholder.com/300x200?text=No+Image'}" 
+                     alt="${product.name}" class="product-image">
+                <div class="product-info">
+                    <div class="product-name" onclick="viewProductDetails('${product.id}')">${product.name}</div>
+                    <div class="product-category">${product.category}</div>
+                    <div class="product-price">$${product.price}</div>
+                    <div class="product-stock ${stockClass}">${stockText}</div>
+                    <div class="product-actions">
+                        <div class="quantity-controls">
+                            <button onclick="decreaseQuantity('${product.id}')">-</button>
+                            <input type="number" id="qty-${product.id}" value="1" min="1" max="${product.stock}" class="quantity-input">
+                            <button onclick="increaseQuantity('${product.id}', ${product.stock})">+</button>
+                        </div>
+                        <button class="btn btn-success" onclick="addToCart('${product.id}')" 
+                                ${!isInStock ? 'disabled' : ''}>
+                            Add to Cart
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            return card;
+        }
+
+        function increaseQuantity(productId, maxStock) {
+            const input = document.getElementById(`qty-${productId}`);
+            const currentValue = parseInt(input.value);
+            if (currentValue < maxStock) {
+                input.value = currentValue + 1;
+            }
+        }
+
+        function decreaseQuantity(productId) {
+            const input = document.getElementById(`qty-${productId}`);
+            const currentValue = parseInt(input.value);
+            if (currentValue > 1) {
+                input.value = currentValue - 1;
+            }
+        }
+
+        function viewProductDetails(productId) {
+            window.location.href = `product-detail.html?id=${productId}`;
+        }
+
+        async function addToCart(productId) {
+            // Check if user is authenticated first
+            try {
+                const authResponse = await fetch('/api/auth/me', {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+                
+                if (!authResponse.ok) {
+                    // User is not logged in, redirect to login
+                    if (confirm('You need to login to add items to cart. Would you like to login now?')) {
+                        window.location.href = 'login.html';
+                    }
+                    return;
+                }
+            } catch (error) {
+                console.error('Auth check failed:', error);
+                if (confirm('You need to login to add items to cart. Would you like to login now?')) {
+                    window.location.href = 'login.html';
+                }
+                return;
+            }
+            
+            const quantity = parseInt(document.getElementById(`qty-${productId}`).value);
+            
+            try {
+                const response = await fetch('/api/cart/add', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        productId: productId,
+                        quantity: quantity
+                    })
+                });
+
+                if (!response.ok) {
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Failed to add to cart');
+                }
+
+                const data = await response.json();
+                alert('Item added to cart successfully!');
+                updateCartCount();
+                
+                // Reset quantity to 1
+                document.getElementById(`qty-${productId}`).value = 1;
+            } catch (error) {
+                console.error('Error adding to cart:', error);
+                alert('Error adding to cart: ' + error.message);
+            }
+        }
+
+        function updateCartCount() {
+            fetch('/api/cart/count')
+                .then(response => response.json())
+                .then(data => {
+                    const cartCount = document.getElementById('cartCount');
+                    const cartCountNumber = document.getElementById('cartCountNumber');
+                    if (data.count > 0) {
+                        cartCountNumber.textContent = data.count;
+                        cartCount.style.display = 'flex';
+                    } else {
+                        cartCount.style.display = 'none';
+                    }
+                })
+                .catch(error => {
+                    console.error('Error fetching cart count:', error);
+                });
+        }
+
+        // Logout function
+        async function logout() {
+            try {
+                const response = await fetch('/api/auth/logout', {
+                    method: 'POST',
+                    credentials: 'include'
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    window.location.href = '/login.html';
+                } else {
+                    alert('Logout failed: ' + data.message);
+                }
+            } catch (error) {
+                alert('Logout failed: ' + error.message);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Forgot Password - E-Store</title>
+  
+  <!-- Material Design Lite CSS -->
+  <link rel="stylesheet" href="https://code.getmdl.io/1.3.0/material.indigo-pink.min.css">
+  <link rel="stylesheet" href="stylesheets/mdl-custom.css">
+  
+  <style>
+    .forgot-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      padding: 20px;
+    }
+    
+    .forgot-card {
+      width: 100%;
+      max-width: 400px;
+      background: white;
+      border-radius: 8px;
+      box-shadow: 0 8px 32px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .forgot-header {
+      background: var(--mdl-color-primary);
+      color: white;
+      padding: 32px;
+      text-align: center;
+    }
+    
+    .forgot-header h2 {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 300;
+    }
+    
+    .forgot-header p {
+      margin: 8px 0 0 0;
+      opacity: 0.9;
+    }
+    
+    .forgot-form {
+      padding: 32px;
+    }
+    
+    .form-group {
+      margin-bottom: 24px;
+    }
+    
+    .form-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      margin-top: 32px;
+    }
+    
+    .form-links {
+      text-align: center;
+      margin-top: 24px;
+    }
+    
+    .form-links a {
+      color: var(--mdl-color-primary);
+      text-decoration: none;
+      margin: 0 8px;
+      font-size: 0.9rem;
+    }
+    
+    .form-links a:hover {
+      text-decoration: underline;
+    }
+    
+    .loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="forgot-container">
+    <div class="forgot-card">
+      <div class="forgot-header">
+        <h2>Reset Password</h2>
+        <p>Enter your email to receive reset instructions</p>
+      </div>
+      
+      <form id="forgotForm" class="forgot-form">
+        <div class="form-group">
+          <div class="mdl-textfield mdl-js-textfield mdl-textfield--floating-label">
+            <input class="mdl-textfield__input" type="email" id="email" required />
+            <label class="mdl-textfield__label" for="email">Email Address</label>
+          </div>
+        </div>
+        
+        <div class="form-actions">
+          <button type="submit" class="mdl-button mdl-js-button mdl-button--raised mdl-button--colored mdl-js-ripple-effect" id="forgotBtn">
+            <span class="mdl-button__ripple-container">
+              <span class="mdl-ripple"></span>
+            </span>
+            Send Reset Token
+          </button>
+        </div>
+        
+        <div class="form-links">
+          <a href="/">← Back to Home</a>
+          <a href="login.html">Remember your password?</a>
+          <a href="register.html">Create Account</a>
+        </div>
+      </form>
+      
+      <div id="msg" class="mdl-snackbar" style="display: none;"></div>
+    </div>
+  </div>
+
+  <!-- Material Design Lite JavaScript -->
+  <script src="https://code.getmdl.io/1.3.0/material.min.js"></script>
+  
+  <script>
+    const form = document.getElementById('forgotForm');
+    const msg = document.getElementById('msg');
+    const forgotBtn = document.getElementById('forgotBtn');
+    
+    // Initialize MDL components
+    document.addEventListener('DOMContentLoaded', function() {
+      if (typeof componentHandler !== 'undefined') {
+        componentHandler.upgradeAllRegistered();
+      }
+    });
+    
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      
+      // Show loading state
+      forgotBtn.disabled = true;
+      forgotBtn.innerHTML = '<div class="loading"><div class="mdl-spinner mdl-js-spinner is-active"></div>Sending reset token...</div>';
+      
+      try {
+        const res = await fetch('/api/auth/password/forgot', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          credentials: 'include',
+          body: JSON.stringify({ email: document.getElementById('email').value })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+          showSnackbar('Reset token sent successfully! Please check your email and use the token to reset your password.', 'success');
+          // Clear the form
+          document.getElementById('email').value = '';
+        } else {
+          showSnackbar('Failed to send reset token: ' + data.message, 'error');
+        }
+        resetButton();
+      } catch (err) {
+        showSnackbar('Request failed: ' + err.message, 'error');
+        resetButton();
+      }
+    });
+    
+    function resetButton() {
+      forgotBtn.disabled = false;
+      forgotBtn.innerHTML = 'Send Reset Token';
+    }
+    
+    function showSnackbar(message, type = 'info') {
+      // Remove existing snackbar
+      const existingSnackbar = document.querySelector('.mdl-snackbar');
+      if (existingSnackbar) {
+        existingSnackbar.remove();
+      }
+      
+      // Create new snackbar
+      const snackbar = document.createElement('div');
+      snackbar.className = `mdl-snackbar ${type === 'error' ? 'error' : type === 'success' ? 'success' : ''}`;
+      snackbar.textContent = message;
+      
+      document.body.appendChild(snackbar);
+      
+      // Show snackbar
+      setTimeout(() => {
+        snackbar.classList.add('mdl-snackbar--active');
+      }, 100);
+      
+      // Hide snackbar after 5 seconds for success messages
+      const hideDelay = type === 'success' ? 5000 : 3000;
+      setTimeout(() => {
+        snackbar.classList.remove('mdl-snackbar--active');
+        setTimeout(() => {
+          snackbar.remove();
+        }, 300);
+      }, hideDelay);
+    }
+  </script>
+</body>
+</html>
+
+
