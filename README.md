@@ -1,44 +1,56 @@
-# E-Store (Vipul Project)
 
-A full-stack e-commerce demo.
+# A backend focused full-stack e-commerce web app .
 
 ## Stack
 
 - Backend: Node.js, Express.js
 - DB Layer: MySQL (mysql2) with Sequelize models plus optimized raw SQL queries
-- Auth: JWT (httpOnly cookie sessions)
+- Auth: JWT 
 - Email: Nodemailer (Ethereal for dev)
-- Frontend: Static HTML/CSS/JS (Material Design Lite + custom theme)
+- Frontend: Static HTML/CSS/JS
 
 ## Features
 
 - Product catalog with search, filters, pagination
-- Cart & checkout with order creation (transactional)
-- Reviews with helpfulness metrics
-- Admin dashboard: manage products, reviews, orders (status workflow)
-- Analytics endpoints: top selling, category stats
+- Cart & checkout with order creation 
+- Reviews with helpfulness metrics 
 
-## Structure
+- Admin dashboard: manage products, reviews, orders , check category wise statistics
 
-```
-backend/
-  app.js
-  config/env.js
-  Database/
-  controllers/
-  routes/
-  middleware/
-  models/
-  scripts/
-  services/
-frontend/
-  public/
-```
+## Demonstration 
+### Main Page
+
+![Main1-ezgif com-reverse](https://github.com/user-attachments/assets/3e2a7980-3410-4602-b130-6ebc06e06bf4)
+
+
+
+### ADMIN Portal
+![Untitledvideo-MadewithClipchamp-ezgif com-reverse](https://github.com/user-attachments/assets/33670851-b7df-4dda-9217-e522bb86c998)
+
+
+
+### Product Details 
+![ProdDetailsInfinite-ezgif com-reverse](https://github.com/user-attachments/assets/02859205-c18e-40b6-b1a3-a0be9f243afb)
+
+### Successfull Order 
+<img width="1280" height="720" alt="order_1280x720" src="https://github.com/user-attachments/assets/72db90b8-90b9-4fd8-befb-0275e94e249a" />
+
+
+### User Dashboard
+<img width="1280" height="720" alt="Dash_1280x720" src="https://github.com/user-attachments/assets/62a88233-ef49-42fa-bcd3-0a7c2036acfa" />
+
+
+
+
+
+
+
 
 ## Requirements
 
 - Node.js 18+
 - MySQL 8+
+
 
 ## Setup
 
@@ -64,7 +76,7 @@ Notes:
 3) Start
 
 ```bash
-# from backend/
+cd backend
 node app.js
 ```
 
