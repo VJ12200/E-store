@@ -1,20 +1,23 @@
+# E-Store
+ A backend focused full-stack e-commerce web app .
 
-# A backend focused full-stack e-commerce web app .
+![JavaScript](https://badgen.net/badge/JavaScript/ES6+/yellow?icon=javascript)
+![HTML5](https://badgen.net/badge/HTML/5/orange?icon=html5)
+![HTML5](https://badgen.net/badge/HTML/5/orange?icon=html5)
+![Node.js](https://badgen.net/badge/Node.js/18+/green?icon=node-dot-js)
+![Express](https://badgen.net/badge/Express/4.x/blue?icon=express)
+![JWT](https://badgen.net/badge/JWT/Supported/orange?icon=jsonwebtokens)
+![MySQL](https://badgen.net/badge/MySQL/8.0+/blue?icon=mysql)
+![Sequelize](https://badgen.net/badge/Sequelize/6.x/blue?icon=sequelize)
+![Nodemailer](https://badgen.net/badge/Nodemailer/Supported/green?icon=npm)
 
-## Stack
-
-- Backend: Node.js, Express.js
-- DB Layer: MySQL (mysql2) with Sequelize models plus optimized raw SQL queries
-- Auth: JWT 
-- Email: Nodemailer (Ethereal for dev)
-- Frontend: Static HTML/CSS/JS
 
 ## Features
 
 - Product catalog with search, filters, pagination
 - Cart & checkout with order creation 
 - Reviews with helpfulness metrics 
-
+- JWT Based User Authentication and Email Password Recovery 
 - Admin dashboard: manage products, reviews, orders , check category wise statistics
 
 ## Demonstration 
