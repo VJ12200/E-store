@@ -201,51 +201,7 @@ export const searchProducts = async (keyword, filters = {}, page = 1, limit = 10
 
 
 // ========================================
-// REVIEW AGGREGATION QUERIES
-
-
-
-
-
-// ========================================
 // PRODUCT ANALYTICS QUERIES
-
-
-export const getTopSellingProducts = async (limit = 10, startDate, endDate) => {
-  const connection = await pool.getConnection();
-  
-  try {
-    let whereClause = '';
-    let params = [];
-    
-    if (startDate && endDate) {
-      whereClause = 'WHERE o.created_at BETWEEN ? AND ?';
-      params = [startDate, endDate];
-    }
-    
-    const [rows] = await connection.execute(`
-      SELECT 
-        p.id,
-        p.name,
-        p.price,
-        p.category,
-        SUM(oi.quantity) as total_sold,
-        SUM(oi.quantity * oi.price) as total_revenue,
-        COUNT(DISTINCT o.id) as order_count
-      FROM products p
-      JOIN order_items oi ON p.id = oi.product_id
-      JOIN orders o ON oi.order_id = o.id
-      ${whereClause}
-      GROUP BY p.id, p.name, p.price, p.category
-      ORDER BY total_sold DESC
-      LIMIT ?
-    `, [...params, limit]);
-    
-    return rows;
-  } finally {
-    connection.release();
-  }
-};
 
 export const getFeaturedProducts = async (limit = 8) => {
   const connection = await pool.getConnection();
