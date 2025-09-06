@@ -91,13 +91,7 @@ node app.js
 
 - Frontend integration
   - Pages fetch data from the API (e.g., product lists, cart count, login). `admin.html` manages tables and updates order status via `/api/admin/orders/:id/status`.
-
-## Seed (optional)
-
-```bash
-node ./scripts/createAdminUser.js
-node ./scripts/populateProducts.js
-```
+    
 
 ## Admin
 
