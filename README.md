@@ -3,7 +3,6 @@
 
 ![JavaScript](https://badgen.net/badge/JavaScript/ES6+/yellow?icon=javascript)
 ![HTML5](https://badgen.net/badge/HTML/5/orange?icon=html5)
-![HTML5](https://badgen.net/badge/HTML/5/orange?icon=html5)
 ![Node.js](https://badgen.net/badge/Node.js/18+/green?icon=node-dot-js)
 ![Express](https://badgen.net/badge/Express/4.x/blue?icon=express)
 ![JWT](https://badgen.net/badge/JWT/Supported/orange?icon=jsonwebtokens)
